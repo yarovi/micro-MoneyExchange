@@ -17,8 +17,10 @@ public class ExchangeRateProviderClient implements ExchangeRateProvider {
 
     Logger logger = LoggerFactory.getLogger(ExchangeRateProviderClient.class);
 
-    @Value("${cache.ttl.minutes:5}")
+    @Value("${cache.ttl.minutes}")
     private long ttlMinutes;
+    @Value("${api.exchange-rate.key}")
+    private String apiKey;
 
     private final WebClient webClient;
     private final ReactiveRedisTemplate<String, ExchangeRateResponseDTO > cache;
@@ -34,7 +36,7 @@ public class ExchangeRateProviderClient implements ExchangeRateProvider {
         return cache.opsForValue()
                 .get(key)
                 .flatMap(cachedRate -> {
-                    logger.info("✔ Valor recuperado de la caché: " + cachedRate);
+                    logger.info("Valor recuperado de la caché: " + cachedRate);
                     return Mono.just(cachedRate);
                 })
                 .switchIfEmpty(fetchExchangeRateFromApi(source, target, amount)
@@ -52,9 +54,9 @@ public class ExchangeRateProviderClient implements ExchangeRateProvider {
                 .set(key, rate,timeout)
                 .doOnSuccess(aBoolean -> {
                     if (aBoolean) {
-                        logger.info("✔ Valor almacenado en caché: " + rate);
+                        logger.info("Valor almacenado en caché: " + rate);
                     } else {
-                        logger.error("❌ Error al almacenar el valor en caché");
+                        logger.error("Error al almacenar el valor en caché");
                     }
                 })
                 .then(Mono.just(true));
@@ -66,7 +68,7 @@ public class ExchangeRateProviderClient implements ExchangeRateProvider {
                         .queryParam("from", sourceCurrency)
                         .queryParam("to", targetCurrency)
                         .queryParam("amount", amount)
-                        .queryParam("access_key", "9c099d61b96894fc27fa8faabd356434")
+                        .queryParam("access_key", apiKey)
                         .build())
                 .retrieve()
                 .bodyToMono(ExchangeRateResponseDTO.class)
