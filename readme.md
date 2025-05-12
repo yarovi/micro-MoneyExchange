@@ -59,3 +59,14 @@ Esto retornara un token con el siguiente formato
 docker build -t micro-money-exchange .
 
 docker run -p 8080:8080 --name micro-money-exchange micro-money-exchange
+
+```bash
+docker tag micro-money-exchange yarovi/micro-money-exchange:v1.0
+
+docker push yarovi/micro-money-exchange:v1.0
+
+docker run -p 8080:8080 --name micro-money-exchange yarovi/micro-money-exchange:v1.0
+```
+
+La imagen esta disponible en :
+https://hub.docker.com/repository/docker/yarovi/micro-money-exchange/general
