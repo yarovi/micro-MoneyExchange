@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: micro-MoneyExchange
+  data:
+    redis:
+      host: redis-11054.c15.us-east-1-4.ec2.redns.redis-cloud.com
+      port: 11054
+      repositories:
+        enabled: false
+      username: memo
+      password: L1br3123.
+
+api:
+  exchange-rate:
+      url: https://api.exchangerate.host
+      key: 9c099d61b96894fc27fa8faabd356434
+      default-currency: USD
+      supported-currencies:
+          - USD
+          - EUR
+          - JPY
+cache:
+  ttl:
+    minutes: 5
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.data.redis: DEBUG
