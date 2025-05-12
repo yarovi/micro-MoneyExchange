@@ -22,6 +22,12 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+
+/** * Web filter for JWT authentication.
+ * This filter intercepts incoming requests and checks for a valid JWT token in the Authorization header.
+ * If the token is valid, it extracts the username and role from the token and sets the authentication context.
+ * If the token is invalid or expired, it returns an error response with the appropriate status code and message.
+ */
 @Component
 public class JwtAuthenticationWebFilter  implements WebFilter {
     private final JwtUtil jwtUtil;
@@ -30,6 +36,15 @@ public class JwtAuthenticationWebFilter  implements WebFilter {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Filters incoming requests to check for JWT authentication.
+     * If a valid JWT token is found, it sets the authentication context.
+     * If the token is invalid or expired, it returns an error response.
+     *
+     * @param exchange The server web exchange containing the request and response.
+     * @param chain The web filter chain to continue processing the request.
+     * @return A Mono that completes when the filter processing is done.
+     */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
@@ -64,6 +79,16 @@ public class JwtAuthenticationWebFilter  implements WebFilter {
         return chain.filter(exchange);
     }
 
+    /**
+     * Handles JWT errors by returning an error response with the appropriate status code and message.
+     *
+     * @param exchange The server web exchange containing the request and response.
+     * @param status The HTTP status code to set in the response.
+     * @param error The error type.
+     * @param message The error message.
+     * @param path The request path.
+     * @return A Mono that completes when the error response is sent.
+     */
     private Mono<Void> handleJwtError(ServerWebExchange exchange, int status, String error, String message, String path) {
         exchange.getResponse().setStatusCode(HttpStatus.valueOf(status));
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);

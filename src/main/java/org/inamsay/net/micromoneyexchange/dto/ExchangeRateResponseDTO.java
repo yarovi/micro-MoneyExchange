@@ -4,6 +4,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO for exchange rate responses.
+ * Contains the success status, query details, info details, and result amount.
+ */
 @Data
 public class ExchangeRateResponseDTO {
     private boolean success;

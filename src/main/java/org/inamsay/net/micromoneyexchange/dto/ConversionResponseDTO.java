@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+
+/**
+ * DTO for conversion responses.
+ * Contains the source amount, converted amount, source currency, target currency, and exchange rate fields.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

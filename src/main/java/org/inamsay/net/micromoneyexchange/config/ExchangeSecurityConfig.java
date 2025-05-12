@@ -15,6 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
+/**
+ * Security configuration for the exchange service.
+ * This class configures the security settings for the application, including
+ * authentication and authorization.
+ */
 @Configuration
 public class ExchangeSecurityConfig {
 
@@ -28,6 +33,12 @@ public class ExchangeSecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
+    /**
+     * Configures the security filter chain for the application.
+     *
+     * @param http the ServerHttpSecurity object to configure
+     * @return the configured SecurityWebFilterChain
+     */
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
         return http
@@ -40,6 +51,12 @@ public class ExchangeSecurityConfig {
                 .build();
     }
 
+    /**
+     * Configures the ReactiveUserDetailsService for user authentication.
+     *
+     * @param userRepository the UserRepository to use for user details
+     * @return the configured ReactiveUserDetailsService
+     */
     @Bean
     public ReactiveUserDetailsService userDetailsService(UserRepository userRepository) {
         return username -> userRepository.findByUsername(username)
@@ -49,6 +66,13 @@ public class ExchangeSecurityConfig {
                         .build());
     }
 
+    /**
+     * Configures the ReactiveAuthenticationManager for user authentication.
+     *
+     * @param userDetailsService the ReactiveUserDetailsService to use for user details
+     * @param passwordEncoder    the PasswordEncoder to use for password encoding
+     * @return the configured ReactiveAuthenticationManager
+     */
     @Bean
     public ReactiveAuthenticationManager authenticationManager(
             ReactiveUserDetailsService userDetailsService,
@@ -58,6 +82,11 @@ public class ExchangeSecurityConfig {
         return authManager;
     }
 
+    /**
+     * Configures the PasswordEncoder for password encoding.
+     *
+     * @return the configured PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

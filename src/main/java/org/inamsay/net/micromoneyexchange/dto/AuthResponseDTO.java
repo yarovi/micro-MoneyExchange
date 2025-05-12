@@ -2,8 +2,11 @@ package org.inamsay.net.micromoneyexchange.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.inamsay.net.micromoneyexchange.exception.ErrorResponse;
 
+/**
+ * DTO for authentication responses.
+ * Contains the token field.
+ */
 @Data
 @AllArgsConstructor
 public class AuthResponseDTO {

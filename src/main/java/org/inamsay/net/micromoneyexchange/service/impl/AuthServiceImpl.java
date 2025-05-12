@@ -13,16 +13,35 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+
+/** * Service implementation for handling authentication operations.
+ * This class uses a ReactiveAuthenticationManager to authenticate users
+ * and generate JWT tokens.
+ */
 @Service
 public class AuthServiceImpl {
     private final ReactiveAuthenticationManager authManager;
     private final JwtUtil jwtUtil;
 
+    /** * Constructor for AuthServiceImpl.
+     * This constructor initializes the service with the provided ReactiveAuthenticationManager and JwtUtil.
+     *
+     * @param authManager The ReactiveAuthenticationManager to be used for authentication.
+     * @param jwtUtil The JwtUtil to be used for generating JWT tokens.
+     */
     public AuthServiceImpl(ReactiveAuthenticationManager authManager, JwtUtil jwtUtil) {
         this.authManager = authManager;
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Authenticates the user with the provided credentials and generates a JWT token.
+     * This method uses the ReactiveAuthenticationManager to authenticate the user
+     * and the JwtUtil to generate the token.
+     *
+     * @param request The AuthRequestDTO containing the username and password.
+     * @return A Mono containing the AuthResponseDTO with the generated JWT token.
+     */
     public Mono<AuthResponseDTO> authenticate(AuthRequestDTO request) {
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 request.getUsername(), request.getPassword());

@@ -12,6 +12,10 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
+/**
+ * ExchangeRateProviderClient is a client that fetches exchange rates from an external API and caches the results.
+ * It implements the ExchangeRateProvider interface.
+ */
 @Component
 public class ExchangeRateProviderClient implements ExchangeRateProvider {
 
@@ -25,12 +29,26 @@ public class ExchangeRateProviderClient implements ExchangeRateProvider {
     private final WebClient webClient;
     private final ReactiveRedisTemplate<String, ExchangeRateResponseDTO > cache;
 
+    /**
+     * Constructor for ExchangeRateProviderClient.
+     *
+     * @param apiClient the WebClient used to make API calls
+     * @param cache1    the ReactiveRedisTemplate used for caching
+     */
     public ExchangeRateProviderClient(WebClient apiClient,  ReactiveRedisTemplate<String, ExchangeRateResponseDTO > cache1) {
         this.webClient = apiClient;
         this.cache = cache1;
         logger.info("ExchangeRateProviderClient initialized");
     }
 
+    /**
+     * Retrieves the exchange rate for a given source and target currency, and caches the result.
+     *
+     * @param source the source currency
+     * @param target the target currency
+     * @param amount the amount to convert
+     * @return a Mono containing the ExchangeRateResponseDTO
+     */
     public Mono<ExchangeRateResponseDTO> getExchangeRate(String source, String target, float amount) {
         String key = generateKey(source, target, amount);
         return cache.opsForValue()
@@ -45,9 +63,24 @@ public class ExchangeRateProviderClient implements ExchangeRateProvider {
 
     }
 
+    /**
+     * Generates a cache key based on the source and target currencies and the amount.
+     *
+     * @param from   the source currency
+     * @param to     the target currency
+     * @param amount the amount to convert
+     * @return a string representing the cache key
+     */
     private String generateKey(String from, String to, float amount) {
         return String.format("%s_%s_%.2f", from, to, amount);
     }
+    /**
+     * Caches the exchange rate response.
+     *
+     * @param key  the cache key
+     * @param rate the exchange rate response
+     * @return a Mono indicating whether the caching was successful
+     */
     private Mono<Boolean> cacheRate(String key, ExchangeRateResponseDTO  rate) {
         Duration timeout = Duration.ofMinutes(ttlMinutes);
         return cache.opsForValue()
@@ -61,6 +94,15 @@ public class ExchangeRateProviderClient implements ExchangeRateProvider {
                 })
                 .then(Mono.just(true));
     }
+
+    /**
+     * Fetches the exchange rate from the external API.
+     *
+     * @param sourceCurrency the source currency
+     * @param targetCurrency the target currency
+     * @param amount        the amount to convert
+     * @return a Mono containing the ExchangeRateResponseDTO
+     */
     private Mono<ExchangeRateResponseDTO> fetchExchangeRateFromApi(String sourceCurrency, String targetCurrency, float amount) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -74,6 +116,6 @@ public class ExchangeRateProviderClient implements ExchangeRateProvider {
                 .bodyToMono(ExchangeRateResponseDTO.class)
 
                 .onErrorResume(e -> Mono.error(
-                        new HandlerExchangeRateException("Failed to fetch exchange rate of Client", e)));
+                        new HandlerExchangeRateException("No se pudo recuperar el tipo de cambio de la Cliente", e)));
     }
 }

@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+/**
+ * AuthController handles authentication requests.
+ * It provides an endpoint for user login.
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -19,6 +23,12 @@ public class AuthController {
     @Autowired
     private AuthServiceImpl authService;
 
+    /**
+     * Handles user login requests.
+     *
+     * @param request the authentication request containing username and password
+     * @return a Mono containing the authentication response or an error response
+     */
     @PostMapping("/login")
     public Mono<ResponseEntity<AuthResponseDTO>> login(@RequestBody AuthRequestDTO request) {
         return authService.authenticate(request)

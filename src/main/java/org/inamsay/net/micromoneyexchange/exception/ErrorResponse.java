@@ -4,6 +4,10 @@ import lombok.Data;
 
 import java.time.Instant;
 
+/**
+ * ErrorResponse class represents the structure of error responses returned by the API.
+ * It includes fields for timestamp, status, error, message, and path.
+ */
 @Data
 public class ErrorResponse {
     private String timestamp;

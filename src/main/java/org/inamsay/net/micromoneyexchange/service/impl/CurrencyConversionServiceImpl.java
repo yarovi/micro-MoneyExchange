@@ -10,6 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+
+/** * Implementation of the CurrencyConversionService interface.
+ * This service handles currency conversion requests by interacting with an external exchange rate provider.
+ * It uses the ExchangeRateProviderClient to fetch the exchange rates and perform the conversion.
+ */
 @Service
 public class CurrencyConversionServiceImpl implements CurrencyConversionService {
 
@@ -17,11 +22,23 @@ public class CurrencyConversionServiceImpl implements CurrencyConversionService 
 
     private final ExchangeRateProvider rateProvider;
 
+    /** * Constructor for CurrencyConversionServiceImpl.
+     * This constructor initializes the service with the provided ExchangeRateProviderClient.
+     *
+     * @param rateProviderClient The ExchangeRateProviderClient to be used for fetching exchange rates.
+     */
     public CurrencyConversionServiceImpl(ExchangeRateProviderClient rateProviderClient) {
         this.rateProvider = rateProviderClient;
         logger.info("CurrencyConversionServiceImpl initialized");
     }
 
+    /**
+     * Converts the given currency amount from source currency to target currency.
+     * This method interacts with the ExchangeRateProvider to fetch the exchange rate and perform the conversion.
+     *
+     * @param request The ConversionRequestDTO containing the source currency, target currency, and amount to be converted.
+     * @return A Mono containing the ConversionResponseDTO with the conversion result.
+     */
     @Override
     public Mono<ConversionResponseDTO> convert(ConversionRequestDTO request) {
 
